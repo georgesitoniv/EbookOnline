@@ -1,0 +1,23 @@
+{% extends 'ebook_base.html' %}
+
+{% block content %}
+    <div class="container margin-vertical-10">
+        <a class="btn cyan  waves-effect waves-light" href="{% url 'book:category_list'%}"><i class="material-icons left">chevron_left</i>All Categories</a>
+        <div class="section center card-panel">
+            <h2>{{category.name}}</h2>
+            <img class="responsive-img icon" src="{{category.image_url}}">
+        </div>
+        <h4 class="padding-10">Books in this Category</h4>
+        <div class="row">
+        {% for book in book_list %}
+            <div class="col s12 m4">
+                {% include "book/book-card.html"%}
+            </div>
+        {% endfor %}
+        </div>
+        <div class="center-align">
+            {% include 'book/includes/pagination.html'%}
+        </div>
+    </div>
+    
+{% endblock%}

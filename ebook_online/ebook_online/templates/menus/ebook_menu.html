@@ -1,0 +1,55 @@
+    <nav class="red">
+        <div class="nav-wrapper container">
+            <a href="{% url 'book:index' %}" class="brand-logo">E-Book Online</a>
+            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="{% url 'book:index'%}">Home</a></li>
+                <li><a href="{% url 'book:book_list' %}" id="menu-item-books" class="dropdown-button" data-activates="dropdown-books">Books</a></li>
+                <li><a id="menu-item-profile" class="dropdown-button" data-activates="dropdown-profile">Account</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile-demo">
+                <li><a href="{% url 'book:index'%}">Home</a></li>
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion no">
+                        <li>
+                            <a class="collapsible-header">Book Groups<i class="material-icons">arrow_drop_down</i></a>
+                            <div class="collapsible-body no-padding">
+                                <ul>
+                                    <li><a href="{% url 'book:book_list' %}">Books</a></li>
+                                    <li><a href="{% url 'book:author_list'%}">Authors</a></li>
+                                    <li><a href="{% url 'book:category_list'%}">Categories</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion">
+                        <li>
+                            <a class="collapsible-header">Account<i class="material-icons">arrow_drop_down</i></a>
+                            <div class="collapsible-body no-padding">
+                                <ul>
+                                    <li><a href="{% url 'account:profile' slug=request.user.userprofile.slug%}">Profile</a></li>
+                                    <li><a href="{% url 'account:edit_profile' slug=request.user.userprofile.slug%}">Edit Profile</a></li>
+                                    <li><a href="{% url 'account:change_password' slug=request.user.userprofile.slug%}">Change Password</a></li>
+                                    <li><a href="{% url 'account:logout'%}">Log Out</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <ul id='dropdown-books' class='dropdown-content'>
+        <li><a href="{% url 'book:author_list'%}">Authors</a></li>
+        <li><a href="{% url 'book:category_list'%}">Categories</a></li>
+    </ul>
+    <ul id='dropdown-profile' class='dropdown-content'>
+        <li><a href="{% url 'account:profile' slug=request.user.userprofile.slug%}">Profile</a></li>
+        <li><a href="{% url 'account:edit_profile' slug=request.user.userprofile.slug%}">Edit Profile</a></li>
+        <li><a href="{% url 'account:change_password' slug=request.user.userprofile.slug%}">Change Password</a></li>
+        <li><a href="{% url 'account:logout'%}">Log Out</a></li>
+    </ul>

@@ -1,0 +1,71 @@
+{% extends 'ebook_base.html' %}
+{% load thumbnail%}
+{% block content %}
+    <div class="container">
+        <div class="card-panel">
+            <form action="." role="form" method="POST" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="center">
+                    <img class="responsive-img circle {%if not user.userprofile.display_image %} icon {% endif %}" src="{%if user.userprofile.display_image%} {% thumbnail user.userprofile.display_image 230x230 crop subject_location=user.userprofile.display_image.subject_location %}{% else %} {{user.userprofile.image_url}} {% endif %}">
+                </div>
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Image</span>
+                        <input  type="file" accept="image/*" id="id_display_image" name="display_image" name="display_image" value="{{request.user.userprofile.display_image}}"/>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" value="{{request.user.userprofile.image_url}}"  />
+                    </div>
+                </div>
+
+                <div class="input-field">
+                    <label for="id_first_name">First name:</label>
+                    <input id="id_first_name" maxlength="60" name="first_name" value="{{request.user.first_name}}" type="text" required/>
+                </div>
+                {% if form.first_name.errors %}
+                    {% for error in form.first_name.errors %}
+                        <div class="chip red">
+                                {{error}}
+                            <i class="fa fa-times close" aria-hidden="true"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="input-field">
+                    <label for="id_last_name">Last name:</label>
+                    <input id="id_last_name" maxlength="60" name="last_name" value="{{request.user.last_name}}" type="text" required/>
+                </div>
+                {% if form.last_name.errors %}
+                    {% for error in form.last_name.errors %}
+                        <div class="chip red">
+                                {{error}}
+                            <i class="fa fa-times close" aria-hidden="true"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="input-field">
+                    <label for="id_email">Email address:</label>
+                    <input id="id_email" maxlength="254" name="email" value="{{request.user.email}}" type="email" required/>
+                </div>
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <div class="chip red">
+                                {{error}}
+                            <i class="fa fa-times close" aria-hidden="true"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.display_image.errors %}
+                    {% for error in form.display_image.errors %}
+                        <div class="chip red">
+                                {{error}}
+                            <i class="fa fa-times close" aria-hidden="true"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="right-align">
+                    <input class="btn" type="submit" value="UPDATE"/>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

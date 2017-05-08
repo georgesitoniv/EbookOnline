@@ -1,0 +1,18 @@
+    {% load thumbnail %}
+
+    <div class="card">
+        <a href="{% url 'book:author_detail' slug=author.slug%}">
+            <div class="center padding-15">
+                <img class="responsive-img circle {%if not author.display_image %} icon {% endif %}" src="{%if author.display_image%} {% thumbnail author.display_image 200x200 crop subject_location=author.display_image.subject_location %}{% else %} {{author.image_url}} {% endif %}">
+            </div>
+        </a>
+        <div class="card-content">
+            <span class="card-title activator grey-text text-darken-4">{{author.name}}{% if author.description%}<i class="material-icons right">more_vert</i>{% endif %}</span>                   
+        </div>
+        {% if author.description %}
+            <div class="card-reveal">
+                <span class="card-title grey-text text-darken-4">{{author.name}}<i class="material-icons right">close</i></span>
+                <p>{{author.description|truncatechars:500}}</p>
+            </div>
+        {% endif %}
+    </div>

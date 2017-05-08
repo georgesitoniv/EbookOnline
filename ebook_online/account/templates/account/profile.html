@@ -1,0 +1,29 @@
+{% extends 'ebook_base.html' %}
+{% load thumbnail %}
+{% block content %}
+    <div class="container">
+        <div class="card-panel center">
+            <h3>{{user.first_name}} {{user.last_name}}</h3>
+            <p><i>{{user.email}}</i></p>
+            <img class="responsive-img circle {%if not user.userprofile.display_image %} icon {% endif %}" src="{%if user.userprofile.display_image%} {% thumbnail user.userprofile.display_image 230x230 crop subject_location=user.userprofile.display_image.subject_location %}{% else %} {{user.userprofile.image_url}} {% endif %}">
+        </div>
+        <h3>Bookshelf</h3>
+        {% if user.bookshelf.books|length != "0" and user.bookshelf %}
+            <div class="row">
+            {% for book in page_obj%}
+                <div class="col s12 m4">
+                    {% include "book/book-card.html"%}
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="card-panel center">
+            <p>No books to show</p>
+            <a class="btn" href="{% url 'book:book_list' %}">Add a book</a>
+            </div>
+        {% endif %}
+        <div class="center-align">
+            {% include 'book/includes/pagination.html'%}
+        </div>
+    </div>
+{% endblock %}

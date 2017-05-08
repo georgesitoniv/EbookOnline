@@ -1,0 +1,66 @@
+{% extends 'ebook_base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <h3 class="center">Results for "{{search_term}}"</h3>
+        <div class="row">
+            <div class="col s12 center-align">
+            <ul class="tabs transparent">
+                {% if book_list %}<li class="tab col s{{column_size}}"><a href="#tab-books">Books</a></li>{% endif %}
+                {% if category_list %}<li class="tab col s{{column_size}}"><a href="#tab-categories" href="#test2">Categories</a></li>{% endif %}
+                {% if author_list %}<li class="tab col s{{column_size}}"><a href="#tab-authors">Authors</a></li>{% endif %}
+            </ul>
+            </div>
+            {% if column_count == 0 %}
+            <div class="card-panel center-align">
+                <img class="responsive-img" src="{% static 'img/search.png'%}">
+                <h4>Sorry, no matches found for "{{search_term}}"</h4>
+            </div>
+            {% else %}
+            <div id="tab-books" class="col s12 margin-vertical-10">
+                <div class="row">
+                    {% for book in book_list|slice:":12" %}
+                        <div class="col s12 m4">
+                            {% include "book/book-card.html"%}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if book_list.count > 12 %}
+                    <div class="right-align">
+                        <a  class="cyan btn waves-effect waves-light" href="{% url 'book:search_books_list' search_term=search_term %}">View All</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="tab-categories" class="col s12 margin-vertical-10">
+                <div class="row">
+                    {% for category in category_list|slice:":12" %}
+                        <div class="col s12 m3">
+                            {% include 'book/category-card.html'%}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if category_list.count > 12 %}
+                    <div class="right-align">
+                        <a  class="cyan btn waves-effect waves-light" href="{% url 'book:search_books_list' search_term=search_term %}">View All</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="tab-authors" class="col s12 margin-vertical-10">
+                <div class="row">
+                    {% for author in author_list|slice:":12" %}
+                        <div class="col s12 m4">
+                            {% include 'book/author-card.html'%}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if author_list.count > 12 %}
+                    <div class="right-align">
+                        <a  class="cyan btn waves-effect waves-light" href="{% url 'book:search_books_list' search_term=search_term %}">View All</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}

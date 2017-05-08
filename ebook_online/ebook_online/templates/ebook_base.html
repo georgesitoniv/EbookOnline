@@ -1,0 +1,33 @@
+<!doctype html>
+{% load cms_tags menu_tags sekizai_tags static %}
+<html>
+    <head>
+        <title>E-Book Online</title>
+        <link rel="icon" href="{% static 'img/logo.png'%}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"   rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="{% static 'css/materialize.css' %}"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="{% static 'css/theme.css' %}"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+        {% render_block "css" %}
+        <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+        <script src="{% static 'js/jquery.matchHeight-min.js' %}"></script>
+        {% block startjs%}{% endblock%}
+    </head>
+    <body>
+        {% cms_toolbar %}
+        {% if request.user.is_authenticated %}{% include 'menus/ebook_menu.html'%}{% endif %}
+        {% block content %}{% endblock%}
+        {% render_block "js" %}
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+        <script src="{% static 'js/theme.js' %}"></script>
+        <script src="{% static 'js/ajax.js' %}"></script>
+        {% for message in messages %}
+            <script>
+                Materialize.toast("{{message}}", 5000);
+            </script>
+        {% endfor %}
+        {% block js %}{% endblock %}
+        {% block js2 %}{% endblock %}
+    </body>
+</html>

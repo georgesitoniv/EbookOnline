@@ -1,0 +1,39 @@
+{% extends 'ebook_base.html'%}
+{% load static %}
+
+{% block content %}
+    <div class="parallax-container fullscreen valign-wrapper">
+        <div class="container">
+            <form class="card max-width-500 center-block" action='' method="post">
+                <div class="grey lighten-2 padding-10">
+                    <h5 class="center-align grey-text text-darken-1">E-Book Online</h5>
+                </div>
+                <div class="grey lighten-3 padding-5 center-align">
+                    <img class="responsive-img icon" src="{% static 'img/logo.png'%}"/>
+                </div>
+                {% csrf_token %}
+                <div class="card-content">
+                <div class="input-field">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input id="id_username" name="username" required="required"  type="text" />
+                    <label for="id_username">USERNAME</label>
+                </div>
+                
+                <div class="input-field">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="id_password" name="password" required="required" type="password" />
+                    <label for="id_password">PASSWORD</label>
+                </div>
+
+                <div class="right-align">
+                    <input class="btn waves-effect waves-light green" type="submit" value="Log In"/>
+                    <a class="btn waves-effect waves-light amber darken-3" href="{% url 'account:register' %}">REGISTER</a>
+                </div>
+                </div>
+            </form>
+        </div>
+      <div class="parallax"><img class="responsive-img" src="{% static 'img/material-wallpaper2.png' %}"></div>
+    </div>
+
+
+{% endblock %}

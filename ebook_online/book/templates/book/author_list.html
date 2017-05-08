@@ -1,0 +1,22 @@
+{% extends 'ebook_base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% if search_term %}
+            <div class="margin-vertical-10 right">
+                <a class="btn" href="{% url 'book:search_list' search_term=search_term%}">Back to Search Results</a> 
+            </div>
+        {% endif %}
+        <h2 class="center">Authors{% if search_term %}: "{{search_term}}" {% endif %}</h2>
+        <div class="row">
+            {% for author in author_list %}
+                <div class="col s12 m4">
+                    {% include 'book/author-card.html'%}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="center-align">
+        {% include 'book/includes/pagination.html'%}
+    </div>
+{% endblock %}

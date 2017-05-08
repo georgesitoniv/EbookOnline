@@ -1,0 +1,102 @@
+{% extends 'ebook_base.html'%}
+
+{% block content %}
+    <div class="container">
+        <form class="card-panel" action='' method="post">
+            {% csrf_token %}
+            <h3 class="center">Register</h3>
+            {% if form.non_field_errors %}
+                <div class="chip red">
+                    {{form.non_field_errors.as_text}}
+                    <i class="fa fa-times close" aria-hidden="true"></i>
+                </div>
+            {% endif %}
+            <div class="input-field">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="id_username" maxlength="50" name="username" value="{%if form.username.value%}{{form.username.value}}{%endif%}" required="required" type="text" />
+                <label for="id_username">USERNAME</label>
+            </div>
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <div class="chip red">
+                        {{error}}
+                        <i class="fa fa-times close" aria-hidden="true"></i>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="input-field">
+                <i class="material-icons prefix">email</i>
+                <input id="id_email" maxlength="254" name="email" value="{%if form.email.value%}{{form.email.value}}{%endif%}" type="email" />
+                <label for="id_email">EMAIL ADDRESS</label>
+            </div>
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <div class="chip red">
+                        {{error}}
+                        <i class="fa fa-times close" aria-hidden="true"></i>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col m6 s12">
+                    <div class="input-field ">
+                        <input id="id_first_name" required="required"  value="{%if form.first_name.value%}{{form.first_name.value}}{%endif%}" maxlength="60" name="first_name" type="text" />
+                        <label for="id_first_name">FIRST NAME</label>
+                    </div>
+                    {% if form.first_name.errors %}
+                        {% for error in form.first_name.errors %}
+                            <div class="chip red">
+                                {{error}}
+                                <i class="fa fa-times close" aria-hidden="true"></i>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="col m6 s12">
+                    <div class="input-field">
+                        <input id="id_last_name" required="required"  value="{%if form.last_name.value%}{{form.last_name.value}}{%endif%}" maxlength="60" name="last_name" type="text" />
+                        <label for="id_last_name">LAST NAME</label>
+                    </div>
+                    {% if form.last_name.errors %}
+                        {% for error in form.last_name.errors %}
+                            <div class="chip red">
+                                {{error}}
+                                <i class="fa fa-times close" aria-hidden="true"></i>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col m6 s12">
+                    <div class="input-field ">
+                        <input id="id_password" name="password" required="required" type="password" />
+                        <label for="id_password">PASSWORD</label>
+                    </div>
+                </div>
+                
+                <div class="col m6 s12">
+                    <div class="input-field">
+                        <input id="id_password_validate" name="password_validate" required="required" type="password" />
+                        <label for="id_password_validate">CONFIRM PASSWORD</label>
+                    </div>
+                    {% if form.password_validate.errors %}
+                        {% for error in form.password_validate.errors %}
+                            <div class="chip red">
+                                {{error}}
+                                <i class="fa fa-times close" aria-hidden="true"></i>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>       
+            </div>
+            <div class="right-align">
+                <input class="btn waves-effect waves-light green" type="submit" value="Register"/>
+                <a class="btn waves-effect waves-light amber darken-3" href="{% url 'account:login' %}">LOG IN</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

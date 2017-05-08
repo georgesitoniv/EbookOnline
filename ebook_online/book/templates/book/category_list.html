@@ -1,0 +1,22 @@
+{% extends 'ebook_base.html' %}
+
+{% block content %}
+    <div class="container padding-10">
+        {% if search_term %}
+            <div class="margin-vertical-10 right">
+                <a class="btn" href="{% url 'book:search_list' search_term=search_term%}">Back to Search Results</a> 
+            </div>
+        {% endif %}
+        <h2 class="center">Categories{% if search_term %}: "{{search_term}}" {% endif %}</h2>
+        <div class="row">
+            {% for category in category_list %}
+                <div class="col s12 m3">
+                    {% include 'book/category-card.html'%}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="center-align">
+        {% include 'book/includes/pagination.html'%}
+    </div>
+{% endblock %}

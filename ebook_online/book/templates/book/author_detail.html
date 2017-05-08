@@ -1,0 +1,23 @@
+{% extends 'ebook_base.html' %}
+{% load thumbnail %}
+{% block content %}
+    <div class="container padding-10">
+        <a class="btn cyan waves-effect waves-light" href="{% url 'book:author_list'%}"><i class="material-icons left">chevron_left</i>All Authors</a>
+        <div class="section center card-panel">
+            <h2>{{author.name}}</h2>
+            <img class="responsive-img circle {%if not author.display_image %} icon {% endif %}" src="{%if author.display_image%} {% thumbnail author.display_image 230x230 crop subject_location=author.display_image.subject_location %}{% else %} {{author.image_url}} {% endif %}">
+            <p>{{author.description}}</p>
+        </div>
+        <h4 class="padding-10">Books written by this Author</h4>
+        <div class="row">
+        {% for book in book_list %}
+            <div class="col s12 m4">
+                {% include "book/book-card.html"%}
+            </div>
+        {% endfor %}
+        </div>
+        <div class="center-align">
+            {% include 'book/includes/pagination.html'%}
+        </div>
+    </div>
+{% endblock%}

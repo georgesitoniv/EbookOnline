@@ -1,0 +1,288 @@
+{% extends 'ebook_base.html'%}
+{% load thumbnail %}
+{% block content%}
+    <div class="container">
+        <div class="right-align">
+            <a class="btn margin-vertical-10 amber darken-2 waves-effect waves-light" href="#modal-similar-books">VIEW SIMILAR BOOKS</a>
+        </div>
+        <div class="card horizontal book-detail" >
+            <div class="padding-10 center-align">
+                <img class="responsive-img circle {%if not book.display_image %} icon {% endif %}" src="{%if book.display_image%} {% thumbnail book.display_image 250x250 crop subject_location=book.display_image.subject_location %}{% else %} {{book.image_url}} {% endif %}">
+            </div>
+            <div class="card-stacked">
+                <div class="card-content">
+                    <div class="valign-wrapper right">
+                        <span>{{book.get_average_rating}}</span>
+                        <i class="material-icons yellow-text text-darken-3">grade</i>
+                    </div>
+                    <div class="card-title">
+                        {{book.name}}
+                    </div>
+                    <p>By: <a href="{{book.author.get_absolute_url}}">{{book.author}}</a></p>
+                    {% for category in book.category.all %}
+                    <p class="chip"><a class="black-text"href="{{category.get_absolute_url}}">{{category}}</a></p>
+                    {% endfor %}
+                    {% if book.description %}
+                        <div class="padding-vertical-10">
+                            <div class="grey lighten-1 divider"></div>
+                        </div>
+                        <p>{{book.description}}</p>
+                    {% endif %}
+                </div>
+                <div class="card-action right-align">
+                    <a class="btn margin-vertical-10 amber darken-2 waves-effect waves-light" id="add-to-bookshelf">ADD TO BOOKSHELF</a>
+                    {% if book.ebook_file %}<a class="btn margin-vertical-10 amber darken-2 waves-effect waves-light" href="{{book.ebook_file.url}}" target="_blank">OPEN BOOK</a>{% endif %}
+                </div>
+            </div>
+        </div>
+        {% if book.review_set.all %}
+        <ul class="collection with-header" >
+            <li class="collection-header center">
+                <a class="btn-floating right green waves-effect waves-light" href="#modal-add-review"><i class="material-icons">add</i></a>
+                <h4>Reviews</h4>
+            </li>
+            <div id="collection-reviews">
+            </div>
+            {% comment review_block %}
+            {% for review in book.review_set.all %}
+            <li class="collection-item avatar">
+                <img src="{{review.user.userprofile.image_url}}" alt="" class="circle">
+                <span class="title">{{review.user.first_name}} {{review.user.last_name}}</span>
+                <p><i>{{review.date_posted}}</i></p>
+                <p>{{review.content}}</p>
+                <a class="secondary-content valign-wrapper"><span class="black-text">{{review.rating}}</span><i class="material-icons yellow-text text-darken-3">grade</i></a>
+            </li>
+            {% endfor %}
+            {% endcomment %}
+        </ul>
+        {% endif %}     
+    </div>
+    <div id="modal-add-review" class="modal">
+        <div class="modal-content">
+            <h4>Add a review</h4>
+            <div class="input-field">
+                <label for="id_rating">Rating:</label>
+                <input id="id_rating" name="rating" step="any" type="number" min="1" max="5" value="1"/>
+            </div>
+            <div class="input-field">
+                <label for="id_content">Content:</label>
+                <textarea class="materialize-textarea" placeholder="Review Content" cols="40" id="id_content" maxlength="1000" name="content" rows="10" data-length="1000" value="{%if review_form.content.value%}{{review_form.content.value}}{%endif%}"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-ligt btn-flat">Close</a>
+            <input class="modal-action  waves-effect waves-green btn-flat" id="submit-review" type="submit" value="Submit"/>
+        </div>
+    </div>
+
+    <div id="modal-edit-review" class="modal">
+        <div class="modal-content">
+            <h4>Edit your Review</h4>
+            <div class="input-field">
+                <label for="id_edit_rating">Rating:</label>
+                <input id="id_edit_rating" name="rating" step="any" type="number" min="1" max="5" value="1"/>
+            </div>
+            <div class="input-field">
+                <label for="id_edit_content">Content:</label>
+                <textarea class="materialize-textarea" placeholder="Review Content" cols="40" id="id_edit_content" value="" maxlength="1000" name="content" rows="10" data-length="1000" value=""></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-ligt btn-flat">Close</a>
+            <a href="#!" id="submit-delete-review" class="modal-action waves-effect waves-ligt btn-flat">Delete</a>
+            <input class="modal-action waves-effect waves-green btn-flat" id="submit-edit-review" type="submit" value="Submit"/>
+        </div>
+    </div>
+
+    <div id="modal-similar-books" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h4 class="center">Similar Books</h4>
+            <ul class="collection">
+                {% for similar_book in similar_books %}
+                <li class="collection-item avatar">
+                    <div class="valign-wrapper right">
+                        <span>{{similar_book.get_average_rating}}</span>
+                        <i class="material-icons yellow-text text-darken-3">grade</i>
+                    </div>
+                    <img class="circle" src="{{similar_book.image_url}}"/>
+                    <span class="title"><a href="{{similar_book.get_absolute_url}}">{{similar_book.name}}</a></span>
+                    <p>{{similar_book.author}}</p>
+                    {% for category in similar_book.category.all %}
+                    <p class="chip"><a class="black-text"href="{{category.get_absolute_url}}">{{category}}</a></p>
+                    {% endfor %}
+                </li>
+                {% endfor%}
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        var is_on_bookshelf = false;
+        var review_to_edit_id = 0;
+        $(document).ready(function(){
+            IsOnBookShelf();
+            DisplayResults();
+        });
+
+        $("#add-to-bookshelf").on("click", function(){
+            if(is_on_bookshelf){
+                RemoveFromBookshelf();    
+            } else{
+                AddToBookshelf();
+            }
+        });
+
+        $("#submit-review").on("click", function(){
+            var content = $("#id_content").val();
+            var rating = $("#id_rating").val();
+            if( content == "" ||  rating == ""){
+                Materialize.toast('All fields are required.', 4000);
+            } else if(rating > 5 || rating < 1){
+                Materialize.toast('Please select a rating from 1 until 5.', 4000);
+            } else{
+                $.ajax({
+                    url: '{% url "book:add_review"  slug=book.slug %}',
+                    type: "POST",
+                    dataType: "json",
+                    data:{
+                        "content":content,
+                        "rating":rating,
+                    },
+                    success: function(data){
+                        Materialize.toast('Review added.', 4000);
+                        $("#modal-add-review").modal('close');
+                        $("#id_rating").val(1);
+                        $("#id_content").val("");
+                        DisplayResults();
+                    }
+                });
+            }
+        })
+        $("#submit-edit-review").on("click", function(){
+            var content = $("#id_edit_content").val();
+            var rating = $("#id_edit_rating").val();
+            if( content == "" ||  rating == ""){
+                Materialize.toast('All fields are required.', 4000);
+            } else if(rating > 5 || rating < 1){
+                Materialize.toast('Please select a rating from 1 until 5.', 4000);
+            } else{
+                $.ajax({
+                    url: '/api/update_review/' + review_to_edit_id + '/',
+                    data:{
+                        "content":content,
+                        "rating":parseFloat(rating),
+                    },
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data){
+                        Materialize.toast('Review Updated.', 4000);
+                        $("#modal-edit-review").modal('close')
+                        DisplayResults();
+                    }
+                });
+            }
+        });
+        $("#submit-delete-review").on("click", function(){
+            $.ajax({
+                url: '/api/delete_review/' + review_to_edit_id + '/',
+                dataType: "json",
+                success: function(data){
+                    Materialize.toast('Review Deleted.', 4000);
+                    $("#modal-edit-review").modal('close')
+                    DisplayResults();
+                }
+            });
+        });
+        function IsOnBookShelf(){
+            $.ajax({
+                url: '{% url "book:is_on_bookshelf"  slug=book.slug %}',
+                type: "GET",
+                dataType: "json",
+                success: function(data){
+                    is_on_bookshelf = data.is_on_bookshelf;
+                    ChangeBookshelfText();
+                }
+            });
+        }
+
+        function ChangeBookshelfText(){
+            if(is_on_bookshelf){
+                $("#add-to-bookshelf").text("Remove from Bookshelf");
+            } else{
+                $("#add-to-bookshelf").text("Add to Bookshelf");
+            }
+        }
+
+        function AddToBookshelf(){
+            $.ajax({
+                url: '{% url "book:add_to_bookshelf"  slug=book.slug %}',
+                type: "GET",
+                dataType: "json",
+                success:function(){
+                    Materialize.toast('Added to your bookshelf.', 4000);
+                    IsOnBookShelf();
+                }
+            });
+        }
+
+        function RemoveFromBookshelf(){
+            $.ajax({
+                url: '{% url "book:remove_from_bookshelf"  slug=book.slug %}',
+                type: "GET",
+                dataType: "json",
+                success:function(){
+                    Materialize.toast('Removed to your bookshelf.', 4000);
+                    IsOnBookShelf();
+                }
+            });
+        }
+
+        function DisplayResults(){
+            $.ajax({
+                url: '{% url "book:get_reviews"  slug=book.slug %}',
+                type: "GET",
+                dataType: "json",
+                success: function(data){
+                    var reviews = "";
+                    $.each( data.reviews, function( key, dictionary ) {
+                        var title_attributes = "";
+                        if(dictionary['is_owner']){
+                            title_attributes = "id='" + dictionary["review_id"] + "' class='review-edit' href='#modal-edit-review'";
+                        } else{
+                            title_attributes = "class='black-text'";
+                        }
+                        reviews += 
+                                "<li class='collection-item avatar'>" + 
+                                "<a href='" + dictionary["user_url"]+ "'><img src=" + dictionary["user_image"] + " alt='' class='circle'/></a>" + 
+                                "<span class='title'><a " + title_attributes + ">" + dictionary["user"] + "</a></span>" + 
+                                "<p><i>" + dictionary["date_posted"] + "</i></p>" + 
+                                "<p>" + dictionary["content"] + "</p>" +
+                                "<a class='secondary-content valign-wrapper'><span class='black-text'>" + dictionary["rating"] + "</span><i class='material-icons yellow-text text-darken-3'>grade</i></a></li>"
+                            ;
+                    });
+                    $("#collection-reviews").html(reviews);
+                    $(".review-edit").click(function(){
+                        var id = $(this).attr('id');
+                        review_to_edit_id = id;
+                        $.ajax({
+                            url: '/api/get_review/' + id + '/',
+                            type: "GET",
+                            dataType: "json",
+                            success: function(data){
+                                $("#id_edit_rating").val(data['rating']);
+                                $("#id_edit_content").val(data['content'] + '');
+                            },
+                        });
+                    });                 
+                }
+            });
+        }
+    </script>
+    
+{% endblock %}

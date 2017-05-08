@@ -1,0 +1,144 @@
+{% extends 'ebook_base.html' %}
+
+{% block title %}E-Books{% endblock %}
+{% load recommends %}
+{% block content %}
+    <div class="container">
+        <nav class="margin-vertical-10">
+            <div class="nav-wrapper grey lighten-1" id="index-search-bar">
+                <form action="" method="get">
+                    {% csrf_token %}
+                    <div class="input-field">
+                        <input id="index-search-books" name="index_search_books" class="autocomplete" type="search" placeholder="Search for Books" autocomplete="off" required>
+                        <label class="label-icon" for="index-search-books"><i class="material-icons">search</i></label>
+                        <i id="close-search-books" class="material-icons">close</i>
+                    </div>
+                </form>
+            </div>
+            <div class="right-align">
+                <input type="checkbox" id="chk-autocomplete" checked="checked"/>
+                <label for="chk-autocomplete">Autocomplete</label>
+            </div>
+        </nav>
+
+        <div class="section margin-vertical-10">
+            <h3>Categories</h3>
+            <div class="row">
+            {% for category in categories|slice:":4" %}
+                <div class="col s12 m3">
+                    <div class="card transparent z-depth-0">
+                        <div class="center padding-10">
+                            <img class="responsive-img" src="{{category.display_image.url}}">
+                        </div>
+                        <div class="card-image">
+                            <span class="card-title black-text">{{category.name}}</span>                    
+                            <a id="category-{{category.id}}" class="btn-floating halfway-fab waves-effect waves-light red"
+                            href="{{category.get_absolute_url}}"
+                            >
+                                <i class="material-icons">pageview</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="right-align">
+                <a class="btn waves-effect waves-light cyan" href="{% url 'book:category_list'%}">View All</a>
+            </div>
+        </div>
+
+        {% if suggested_books|length > 0%}
+        <div class="section">
+            <h3>Suggested Books</h3>
+            <div class="row grid">
+                {% for book in suggested_books %}
+                    <div class="col s12 m4 grid-item">
+                        {% include "book/book-card.html"%}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="section">
+            <h3>Featured Books</h3>
+            <div class="row">
+                {% for book in books %}
+                    {% if book.is_featured %}
+                    <div class="col s12 m4">
+                        {% include "book/book-card.html"%}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Top Rated Books</h3>
+            <div class="row">
+                {% for book in top_rated_books|slice:":10" %}
+                    <div class="col s12 m4">
+                        {% include "book/book-card.html"%}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock%}
+
+{% block js %}
+    <script>
+    var is_autocomplete = true;
+    $(function(){
+        var list = {};
+        var linked_list = {}; 
+        ToggleAutocompete();
+        $('#index-search-books').on("input", function(){
+            if(is_autocomplete){
+                $("#index-search-bar .autocomplete-content.dropdown-content").show();
+                var search_term = $('#index-search-books').val();
+                $.ajax({
+                    url: "{% url 'book:get_books' %}",
+                    type:"GET",
+                    data:{
+                        "search_term":search_term,
+                    },
+                    dataType: "json",
+                    success: function(data){
+                        $.each( data, function( key, val ) {
+                            list[key] = null;
+                            linked_list[key] = val;
+                        });
+                        $('#index-search-books').autocomplete({
+                            data:list,
+                            limit: 20,
+                            onAutocomplete: function(val) {
+                                location.href = linked_list[val];
+                            },
+                            minLength: 1,
+                        })
+                    },
+                    error:function(data){
+                        alert("error autocomplete search");
+                    }
+                });
+            }
+        });
+        $("#chk-autocomplete").click(function(){
+            ToggleAutocompete();
+        });
+        $("#close-search-books").on("click", function(){
+            $("#index-search-books").val("");
+            $("#index-search-bar .autocomplete-content.dropdown-content").hide();
+        });
+    });
+    function ToggleAutocompete(){
+        if($("#chk-autocomplete").is(":checked")){
+            is_autocomplete = true;
+        } else{
+            is_autocomplete = false;
+        }
+    }
+  </script>
+{% endblock %}

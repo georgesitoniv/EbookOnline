@@ -1,0 +1,55 @@
+  {% load thumbnail %}
+  <div class="card">
+    <div class="center padding-15">
+      <a href="{{book.get_absolute_url}}">
+        <img class="responsive-img circle {%if not book.display_image %} icon {% endif %}" src="{%if book.display_image%} {% thumbnail book.display_image 200x200 crop subject_location=book.display_image.subject_location %}{% else %} {{book.image_url}} {% endif %}">
+      </a>
+    </div>
+    <div class="card-content">
+        <!--<a id="on-bookshelf-icon-{{book.id}}" class="btn-floating halfway-fab green"><i class="material-icons">bookmark</i></a>-->
+        <span class="card-title activator grey-text text-darken-4">
+            {% if book.description or book.name|length >= 21 %}
+                <i class="material-icons right">more_vert</i>
+            {% endif%}
+            <a class="black-text" href="{{book.get_absolute_url}}">
+              {{book.name|truncatechars:21}}
+            </a>
+        </span>
+      <p><a href="{{book.author.get_absolute_url}}">{{book.author}}</a></p>
+      {% for category in book.category.all %}
+      <p class="chip"><a class="black-text"href="{{category.get_absolute_url}}">{{category}}</a></p>
+      {% endfor %}
+    </div>
+    {% if book.description or book.name|length >= 21 %}
+    <div class="card-reveal">
+      <span class="card-title grey-text text-darken-4"><i class="material-icons right">close</i>{{book.name}}</span>
+      <p>{{book.description|truncatechars:500}}</p>
+    </div>
+    {% endif %}
+  </div>
+  
+  {% comment nothing %}
+  <!--<script>
+        var on_bookshelf = false;
+        $(document).ready(function(){
+            $("#on-bookshelf-icon-{{book.id}}").hide();
+            IsOnBookShelf();
+        });
+        function BookshelfIconVisibility(){
+            if(on_bookshelf){
+             // $("#on-bookshelf-icon-{{book.id}}").show();
+            }
+        };
+        function IsOnBookShelf(){
+            $.ajax({
+                url: '{% url "book:is_on_bookshelf"  slug=book.slug %}',
+                type: "GET",
+                dataType: "json",
+                success: function(data){
+                    on_bookshelf = data.on_bookshelf;
+                    BookshelfIconVisibility();
+                }
+            });
+        }
+    </script>-->
+    {% endcomment %}
